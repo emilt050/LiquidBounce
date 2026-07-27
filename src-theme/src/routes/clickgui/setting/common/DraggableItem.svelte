@@ -1,10 +1,12 @@
 <script>
     import DragIcon from "./icons/DragIcon.svelte";
+
+    export let active = false;
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <div class="draggable-item" on:dragstart|preventDefault>
-    <DragIcon />
+    <DragIcon {active}/>
 
     <slot />
 </div>

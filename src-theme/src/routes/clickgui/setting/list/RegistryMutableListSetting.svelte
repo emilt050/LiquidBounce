@@ -29,11 +29,15 @@
 
     let showChooser = false;
     let sortableRenderKey = 0;
+    let draggingIndex: number | undefined;
 
-    type SortEvent = {
+    type SortStartEvent = {
         oldIndex?: number | null;
-        newIndex?: number | null;
         oldDraggableIndex?: number | null;
+    };
+
+    type SortEvent = SortStartEvent & {
+        newIndex?: number | null;
         newDraggableIndex?: number | null;
     };
 
@@ -75,6 +79,8 @@
     }
 
     function handleSort(e: SortEvent) {
+        draggingIndex = undefined;
+
         const oldIndex = e.oldDraggableIndex ?? e.oldIndex;
         const newIndex = e.newDraggableIndex ?? e.newIndex;
 
@@ -108,6 +114,10 @@
         updateItems();
         sortableRenderKey++;
     }
+
+    function handleDragStart(e: SortStartEvent) {
+        draggingIndex = e.oldDraggableIndex ?? e.oldIndex;
+    }
 </script>
 
 <div class="setting">
@@ -120,9 +130,9 @@
         <div in:slide|global={{duration: 200, axis: "y"}} out:slide|global={{duration: 200, axis: "y"}}>
             <div class="selected-items">
                 {#key sortableRenderKey}
-                    <SortableList class="" forceFallback={true} fallbackOnBody={true} animation={150} onEnd={handleSort}>
+                    <SortableList class="" forceFallback={true} fallbackOnBody={true} animation={150} onStart={handleDragStart} onEnd={handleSort}>
                         {#each selectedItems as item, index (item.value)}
-                            <DraggableItem>
+                            <DraggableItem active={draggingIndex === index}>
                                 <RemovableItem on:remove={() => handleRemove(index)}>
                                     <ListItem value={item.value} name={item.name} icon={item.icon} enabled={false}
                                               showEnabledState={false} pointerCursor={false}/>

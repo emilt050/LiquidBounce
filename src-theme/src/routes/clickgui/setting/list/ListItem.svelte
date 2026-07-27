@@ -56,6 +56,10 @@
       cursor: pointer;
     }
 
+    &:hover .name {
+      color: var(--accent-color);
+    }
+
     &.has-icon:not(.has-enabled-state) {
       grid-template-columns: max-content 1fr;
     }
@@ -81,6 +85,7 @@
   .name {
     font-size: 12px;
     color: var(--clickgui-text-color);
+    transition: color 0.15s ease;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
