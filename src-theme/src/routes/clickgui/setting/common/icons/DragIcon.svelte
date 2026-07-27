@@ -1,10 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
+<script lang="ts">
+    export let width = 5;
+    export let height = 15;
+</script>
+
 <svg
-        width="5"
-        height="15"
+        width={width}
+        height={height}
         viewBox="13.5 10.5 9 15"
-        fill="#fff"
+        fill="currentColor"
         xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+        focusable="false"
 >
     <circle cx="15" cy="12" r="1.5"/>
     <circle cx="21" cy="12" r="1.5"/>

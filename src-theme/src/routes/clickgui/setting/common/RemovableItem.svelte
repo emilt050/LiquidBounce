@@ -1,5 +1,6 @@
 <script lang="ts">
     import {createEventDispatcher} from "svelte";
+    import CrossIcon from "./icons/CrossIcon.svelte";
 
     const dispatch = createEventDispatcher();
 </script>
@@ -8,7 +9,7 @@
     <slot/>
 
     <button class="button-remove" title="Remove" on:click={() => dispatch("remove")}>
-        <img src="img/clickgui/icon-cross.svg" alt="remove">
+        <CrossIcon />
     </button>
 </div>
 

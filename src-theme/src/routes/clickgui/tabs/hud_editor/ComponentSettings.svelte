@@ -3,6 +3,7 @@
     import {getComponentSettings, setComponentSettings} from "../../../../integration/rest";
     import type {Alignment, ConfigurableSetting} from "../../../../integration/types";
     import TogglableSetting from "../../setting/TogglableSetting.svelte";
+    import CrossIcon from "../../setting/common/icons/CrossIcon.svelte";
 
     export let name: string;
     export let id: string;
@@ -95,7 +96,7 @@
                             title="Remove component"
                             on:click={disable}
                     >
-                        <img src="img/clickgui/icon-cross.svg" alt="">
+                        <CrossIcon />
                     </button>
                     <span>{label}</span>
                 </div>
@@ -139,7 +140,7 @@
           min-width: 0;
           cursor: pointer;
 
-          img {
+          :global(svg) {
             display: block;
             width: 10px;
             height: 10px;
