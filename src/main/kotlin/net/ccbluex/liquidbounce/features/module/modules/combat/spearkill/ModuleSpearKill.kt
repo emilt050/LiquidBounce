@@ -28,6 +28,7 @@ import net.ccbluex.liquidbounce.render.drawBox
 import net.ccbluex.liquidbounce.render.engine.type.Color4b
 import net.ccbluex.liquidbounce.render.renderEnvironment
 import net.ccbluex.liquidbounce.render.withPositionRelativeToCamera
+import net.ccbluex.liquidbounce.utils.entity.useItem
 import net.ccbluex.liquidbounce.utils.item.isSpear
 import net.ccbluex.liquidbounce.utils.kotlin.EventPriorityConvention
 import net.minecraft.core.component.DataComponents
@@ -90,6 +91,8 @@ object ModuleSpearKill : ClientModule("SpearKill", ModuleCategories.COMBAT, alia
             applyDash(activeDash)
         } else if (target != null && spear.canStillDamage && mc.options.keyAttack.isDown) {
             dash = SpearDash.towards(target, maxAllowedSpeed.toDouble())
+        } else {
+            rechargeIfSpent(spear)
         }
     }
 
@@ -126,7 +129,17 @@ object ModuleSpearKill : ClientModule("SpearKill", ModuleCategories.COMBAT, alia
         dash = null
     }
 
+    private fun rechargeIfSpent(spear: KineticWeapon) {
+        if (!mc.options.keyUse.isDown || !spear.isSpent) return
+
+        val hand = player.usedItemHand
+        interaction.releaseUsingItem(player)
+        useItem(hand)
+    }
+
     private val KineticWeapon.isReadyToLaunch get() = player.ticksUsingItem > delayTicks
+
+    private val KineticWeapon.isSpent get() = player.ticksUsingItem > computeDamageUseDuration()
 
     private val KineticWeapon.canStillDamage
         get() = player.ticksUsingItem < computeDamageUseDuration() - delayTicks
