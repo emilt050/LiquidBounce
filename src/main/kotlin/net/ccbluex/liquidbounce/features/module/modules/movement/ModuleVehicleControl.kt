@@ -27,7 +27,7 @@ import net.ccbluex.liquidbounce.event.tickHandler
 import net.ccbluex.liquidbounce.event.waitTicks
 import net.ccbluex.liquidbounce.features.module.ClientModule
 import net.ccbluex.liquidbounce.features.module.ModuleCategories
-import net.ccbluex.liquidbounce.features.module.modules.combat.ModuleSpearKill
+import net.ccbluex.liquidbounce.features.module.modules.combat.spearkill.ModuleSpearKill
 import net.ccbluex.liquidbounce.utils.client.chat
 import net.ccbluex.liquidbounce.utils.client.warning
 import net.ccbluex.liquidbounce.utils.entity.boxedDistanceTo
@@ -112,17 +112,7 @@ object ModuleVehicleControl : ClientModule("VehicleControl", ModuleCategories.MO
             else -> 0.0
         }
 
-        val spearDashVelocity =
-            if (ModuleSpearKill.enabled) {
-                val dashSpeed = ModuleSpearKill.currentAttackVelocity
-                if (dashSpeed != 0.0) {
-                    ModuleSpearKill.currentAttackDirection.scale(dashSpeed)
-                } else {
-                    null
-                }
-            } else {
-                null
-            }
+        val spearDashVelocity = ModuleSpearKill.currentDashMovement
 
         // Vehicle control velocity
         val input = DirectionalInput(player.input)
