@@ -245,6 +245,7 @@ import net.ccbluex.liquidbounce.features.module.modules.render.potionfx.ModulePo
 import net.ccbluex.liquidbounce.features.module.modules.render.totemeffect.ModuleTotemEffect
 import net.ccbluex.liquidbounce.features.module.modules.render.trajectories.ModuleTrajectories
 import net.ccbluex.liquidbounce.features.module.modules.world.ModuleAirPlace
+import net.ccbluex.liquidbounce.features.module.modules.world.ModuleAutoBreed
 import net.ccbluex.liquidbounce.features.module.modules.world.ModuleAutoDisable
 import net.ccbluex.liquidbounce.features.module.modules.world.ModuleAutoTool
 import net.ccbluex.liquidbounce.features.module.modules.world.ModuleBedDefender
@@ -685,6 +686,7 @@ object ModuleManager : EventListener, Collection<ClientModule> by modules {
             // World
             AutoMobHeal,
             ModuleAirPlace,
+            ModuleAutoBreed,
             ModuleAutoBuild,
             ModuleAutoDisable,
             ModuleAutoFarm,
