@@ -47,8 +47,26 @@ object ModuleElytraFly : ClientModule("ElytraFly", ModuleCategories.MOVEMENT) {
     private val instant by multiEnumChoice("Instant", Instant.STOP)
 
     object Speed : ToggleableValueGroup(this, "Speed", true) {
-        val vertical by float("Vertical", 0.5f, 0.0f..5f)
-        val horizontal by float("Horizontal", 1f, 0.0f..8f)
+        private val baseVertical by float("Vertical", 0.5f, 0.0f..5f)
+        private val baseHorizontal by float("Horizontal", 1f, 0.0f..8f)
+
+        object SprintSpeed : ToggleableValueGroup(this, "SprintSpeed", true) {
+            val horizontalSpeed by float("Horizontal", 1.5f, 0.0f..8f)
+            val verticalSpeed by float("Vertical", 0.75f, 0.0f..5f)
+        }
+
+        init {
+            tree(SprintSpeed)
+        }
+
+        private val useSprintSpeed: Boolean
+            get() = SprintSpeed.enabled && mc.options.keySprint.isDown
+
+        val vertical: Float
+            get() = if (useSprintSpeed) SprintSpeed.verticalSpeed else baseVertical
+
+        val horizontal: Float
+            get() = if (useSprintSpeed) SprintSpeed.horizontalSpeed else baseHorizontal
     }
 
 

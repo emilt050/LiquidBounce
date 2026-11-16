@@ -20,6 +20,7 @@ package net.ccbluex.liquidbounce.features.module.modules.combat.spearkill
 
 import net.ccbluex.liquidbounce.config.types.group.ToggleableValueGroup
 import net.ccbluex.liquidbounce.event.events.GameTickEvent
+import net.ccbluex.liquidbounce.event.events.PlayerMoveEvent
 import net.ccbluex.liquidbounce.event.events.WorldRenderEvent
 import net.ccbluex.liquidbounce.event.handler
 import net.ccbluex.liquidbounce.features.module.ClientModule
@@ -34,6 +35,7 @@ import net.ccbluex.liquidbounce.utils.item.isSpear
 import net.ccbluex.liquidbounce.utils.kotlin.EventPriorityConvention
 import net.minecraft.core.component.DataComponents
 import net.minecraft.world.entity.LivingEntity
+import net.minecraft.world.entity.MoverType
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon
 import net.minecraft.world.item.component.KineticWeapon
 import net.minecraft.world.phys.Vec3
@@ -60,6 +62,7 @@ object ModuleSpearKill : ClientModule("SpearKill", ModuleCategories.COMBAT, alia
 
     private val attackMovements = ArrayDeque<Vec3>()
     private var previewTarget: LivingEntity? = null
+    private var appliedMovement: Vec3? = null
 
     private val currentMovement get() = attackMovements.firstOrNull() ?: Vec3.ZERO
 
@@ -83,6 +86,7 @@ object ModuleSpearKill : ClientModule("SpearKill", ModuleCategories.COMBAT, alia
 
     private fun resetAttack() {
         previewTarget = null
+        appliedMovement = null
         if (attackMovements.isNotEmpty()) player.deltaMovement = Vec3.ZERO
         attackMovements.clear()
     }
@@ -107,6 +111,8 @@ object ModuleSpearKill : ClientModule("SpearKill", ModuleCategories.COMBAT, alia
 
     @Suppress("unused")
     private val tickHandler = handler<GameTickEvent>(priority = EventPriorityConvention.FINAL_DECISION) {
+        appliedMovement = null
+
         if (!isUsingSpear) {
             resetAttack()
             return@handler
@@ -134,7 +140,9 @@ object ModuleSpearKill : ClientModule("SpearKill", ModuleCategories.COMBAT, alia
         }
 
         if (attackMovements.isNotEmpty()) {
-            player.deltaMovement = attackMovements.removeFirst()
+            val movement = attackMovements.removeFirst()
+            appliedMovement = movement
+            player.deltaMovement = movement
             return@handler
         }
 
@@ -143,6 +151,13 @@ object ModuleSpearKill : ClientModule("SpearKill", ModuleCategories.COMBAT, alia
         val (entity, distance) = target ?: SpearKillTargetFinder.findTarget(maxTargetDistance) ?: return@handler
         previewTarget = entity
         createAttackMovement(entity, distance)
+    }
+
+
+    @Suppress("unused")
+    private val moveHandler = handler<PlayerMoveEvent>(priority = EventPriorityConvention.FINAL_DECISION) { event ->
+        if (event.type != MoverType.SELF) return@handler
+        appliedMovement?.let { event.movement = it }
     }
 
     @Suppress("unused")
