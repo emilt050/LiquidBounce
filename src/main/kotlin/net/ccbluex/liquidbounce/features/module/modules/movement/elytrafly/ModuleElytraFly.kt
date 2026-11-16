@@ -32,6 +32,7 @@ import net.ccbluex.liquidbounce.features.module.modules.movement.elytrafly.modes
 import net.ccbluex.liquidbounce.utils.entity.moving
 import net.ccbluex.liquidbounce.utils.entity.set
 import net.ccbluex.liquidbounce.utils.item.isGlider
+import net.ccbluex.liquidbounce.utils.movement.MayflyOverrideManager
 import net.minecraft.network.protocol.game.ServerboundPlayerCommandPacket
 import net.minecraft.world.effect.MobEffects
 import net.minecraft.world.entity.EquipmentSlot
@@ -76,10 +77,12 @@ object ModuleElytraFly : ClientModule("ElytraFly", ModuleCategories.MOVEMENT) {
 
     override fun onEnabled() {
         needsToRestart = false
+        MayflyOverrideManager.subscribe(this)
     }
 
     override fun onDisabled() {
         needsToRestart = true
+        MayflyOverrideManager.unsubscribe(this)
     }
 
     // checks and start logic

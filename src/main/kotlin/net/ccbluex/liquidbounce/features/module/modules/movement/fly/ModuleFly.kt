@@ -52,7 +52,7 @@ import net.ccbluex.liquidbounce.features.module.modules.movement.fly.modes.vulca
 import net.ccbluex.liquidbounce.features.module.modules.movement.fly.modes.vulcan.FlyVulcan286TeleportMC18
 import net.ccbluex.liquidbounce.utils.client.chat
 import net.ccbluex.liquidbounce.utils.client.markAsError
-import net.minecraft.network.protocol.game.ClientboundPlayerAbilitiesPacket
+import net.ccbluex.liquidbounce.utils.movement.MayflyOverrideManager
 import net.minecraft.network.protocol.game.ClientboundPlayerPositionPacket
 
 /**
@@ -123,15 +123,12 @@ object ModuleFly : ClientModule("Fly", ModuleCategories.MOVEMENT, aliases = list
 
     private val disableOnSetback by boolean("DisableOnSetback", false)
 
-    private var wasFlyingAllowed = false
-
     override fun onEnabled() {
-        wasFlyingAllowed = player.abilities.mayfly
-        player.abilities.mayfly = false
+        MayflyOverrideManager.subscribe(this)
     }
 
     override fun onDisabled() {
-        player.abilities.mayfly = wasFlyingAllowed
+        MayflyOverrideManager.unsubscribe(this)
     }
 
     @Suppress("unused")
@@ -140,10 +137,6 @@ object ModuleFly : ClientModule("Fly", ModuleCategories.MOVEMENT, aliases = list
         if (disableOnSetback && event.packet is ClientboundPlayerPositionPacket) {
             chat(markAsError(message("setbackDetected")))
             enabled = false
-        }
-
-        if (event.packet is ClientboundPlayerAbilitiesPacket) {
-            wasFlyingAllowed = event.packet.canFly()
         }
     }
 
